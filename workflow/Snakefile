@@ -1,0 +1,31 @@
+
+m random import randint, seed
+
+rq1 = []
+rq2 = []
+
+seed(3124)
+for i in range(10):
+    rq1.append(randint(1, 8))
+    rq2.append(randint(1, 64))
+
+rule all:
+    input:
+        expand("analysis/cdf/map_{rq1}-{rq2}.png", zip, rq1 = rq1, rq2 = rq2)
+
+rule model:
+    input:
+        "input/ranges-test.txt"
+    output:
+        "analysis/model/map_{rq1}-{rq2}.txt"
+    shell:
+        "bin/util-rqrmi64.exe --file {input} --custom-rqrmi 1,{wildcards.rq1},{wildcards.rq2} --print-map {output}"
+
+rule cdf:
+    input:
+        "analysis/model/map_{rq1}-{rq2}.txt"
+    output:
+        png = "analysis/cdf/map_{rq1}-{rq2}.png",
+        txt = "analysis/cdf/map_{rq1}-{rq2}.txt"
+    script:
+        "scripts/cdf.py"
