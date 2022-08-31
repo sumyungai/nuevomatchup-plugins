@@ -32,11 +32,15 @@ for fname in input_files:
             sums[x] += sum_y
 list_x = list(sums.keys())
 list_s_raw = list(sums.values())
+
+list_x.sort()
+list_s_raw.sort()
+
 list_s = [ s / list_s_raw[-1] for s in list_s_raw ]
 
 with open(output_txt, 'w') as fd:
     for i in range(len(list_x)):
-        output_txt.write(list_x[i] + "\t" + list_s[i])
+        fd.write(str(list_x[i]) + "\t" + str(list_s[i]))
 fig = plt.figure()
 ax1 = fig.add_subplot(111)
 ax1.set_title("CDF")
