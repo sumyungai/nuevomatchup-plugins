@@ -1,0 +1,35 @@
+Building DAG of jobs...
+MissingInputException in rule cdf_all in line 36 of /home/sumyun/snakemake-script/workflow/Snakefile:
+Missing input files for rule cdf_all:
+    output: analysis/cdf/map_all.png, analysis/cdf/map_all.txt
+    affected files:
+        analysis/model/map_7-15.txt
+        analysis/model/map_3-61.txt
+        analysis/model/map_2-60.txt
+        analysis/model/map_1-27.txt
+        analysis/model/map_6-5.txt
+        analysis/model/map_5-56.txt
+        analysis/model/map_8-2.txt
+        analysis/model/map_5-44.txt
+        analysis/model/map_2-21.txt
+        analysis/model/map_4-45.txt
+        analysis/model/map_8-63.txt
+        analysis/model/map_2-14.txt
+        analysis/model/map_4-26.txt
+        analysis/model/map_3-13.txt
+        analysis/model/map_8-13.txt
+        analysis/model/map_6-56.txt
+        analysis/model/map_4-17.txt
+        analysis/model/map_5-30.txt
+        analysis/model/map_4-2.txt
+        analysis/model/map_6-7.txt
+        analysis/model/map_2-15.txt
+        analysis/model/map_8-25.txt
+        analysis/model/map_1-52.txt
+        analysis/model/map_3-56.txt
+        analysis/model/map_7-28.txt
+        analysis/model/map_4-64.txt
+        analysis/model/map_7-64.txt
+        analysis/model/map_5-49.txt
+        analysis/model/map_3-7.txt
+        analysis/model/map_6-34.txt

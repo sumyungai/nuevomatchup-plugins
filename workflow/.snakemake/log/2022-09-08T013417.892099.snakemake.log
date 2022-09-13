@@ -1,0 +1,3 @@
+WildcardErrorin line 17 of /home/sumyun/snakemake-script/workflow/Snakefile:
+No values given for wildcard 'res'.
+  File "/home/sumyun/snakemake-script/workflow/Snakefile", line 17, in <module>

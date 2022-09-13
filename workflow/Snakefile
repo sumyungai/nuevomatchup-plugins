@@ -1,43 +1,46 @@
-
-from random import randint, seed
+import random
 
 rq1 = []
 rq2 = []
 
-my_seed = config['seed'] if 'seed' in config else 3124
-seed(my_seed)
+configfile:
+    "workflow/config.yaml"
 
+my_seed = config['seed'] if 'seed' in config else 3124
+my_res  = config['res']  if 'res'  in config else 4 
+
+random.seed(my_seed)
 for i in range(30):
-    rq1.append(randint(1, 8))
-    rq2.append(randint(1, 64))
+    rq1.append(random.randint(1, 8))
+    rq2.append(random.randint(1, 64))
 
 rule all:
     input:
-        expand("analysis/cdf/map_{rq1}-{rq2}.png", zip, rq1 = rq1, rq2 = rq2),
-        "analysis/cdf/map_all.png"
+        expand("analysis/cdf/map_{rq1}-{rq2}_%s.png" % my_res, zip, rq1 = rq1, rq2 = rq2),
+        "analysis/cdf/map_all_%s.png" % my_res
 
 rule model:
     input:
         "bin/nuevomatchup/ranges-test.txt"
     output:
-        "analysis/model/map_{rq1}-{rq2}.txt"
+        "analysis/model/map_{rq1}-{rq2}_{res}.txt"
     shell:
-        "bin/nuevomatchup/bin/util-rqrmi64.exe --file {input} --custom-rqrmi 1,{wildcards.rq1},{wildcards.rq2} --print-map {output}"
+        "bin/nuevomatchup/bin/util-rqrmi64.exe --file {input} --custom-rqrmi 1,{wildcards.rq1},{wildcards.rq2} --print-map {output} --resolution {wildcards.res}"
 
 rule cdf_one:
     input:
-        "analysis/model/map_{rq1}-{rq2}.txt"
+        "analysis/model/map_{rq1}-{rq2}_{res}.txt"
     output:
-        png = "analysis/cdf/map_{rq1}-{rq2}.png",
-        txt = "analysis/cdf/map_{rq1}-{rq2}.txt"
+        png = "analysis/cdf/map_{rq1}-{rq2}_{res}.png",
+        txt = "analysis/cdf/map_{rq1}-{rq2}_{res}.txt"
     script:
         "scripts/cdf.py"
 
 rule cdf_all:
     input:
-        expand("analysis/model/map_{rq1}-{rq2}.txt", zip, rq1 = rq1, rq2 = rq2)
+        expand("analysis/model/map_{rq1}-{rq2}_{{res}}.txt", zip, rq1 = rq1, rq2 = rq2)
     output:
-        png = "analysis/cdf/map_all.png",
-        txt = "analysis/cdf/map_all.txt"
+        png = "analysis/cdf/map_all_{res}.png",
+        txt = "analysis/cdf/map_all_{res}.txt"
     script:
         "scripts/cdf.py"
