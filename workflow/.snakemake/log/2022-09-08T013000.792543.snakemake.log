@@ -1,7 +1,0 @@
-Building DAG of jobs...
-MissingInputException in rule model in line 20 of /home/sumyun/snakemake-script/workflow/Snakefile:
-Missing input files for rule model:
-    output: analysis/model/map_2-15_.txt
-    wildcards: rq1=2, rq2=15_
-    affected files:
-        bin/nuevomatchup/ranges-test.txt
