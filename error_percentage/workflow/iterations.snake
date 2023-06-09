@@ -1,0 +1,93 @@
+
+
+import os
+import random
+from os import path
+
+configfile:
+    "workflow/config.yaml"
+
+my_seed = config['seed'] if 'seed' in config else 3124
+rq1 = []
+rq2 = []
+samples = []
+random.seed(my_seed)
+for i in range(10):
+    rq1.append(random.randint(15, 15))
+    rq2.append(random.randint(32, 100))
+for i in range(10):
+    samples.append(random.randint(4000,4000))
+
+iterations = range(config['num_iters'])
+formats = [ 'org', 'float16', 'float8_1', 'half_prec', 'float8_2', 'Bfloat16', 'fp32']
+resolutions = [ 'org', 13, 14, 15, 16, 17, 18, 19, 20 ]
+quan = config['quantization']
+destination = "/mnt/d/Errorfiles"
+
+rule all:
+    input:
+        expand("Errorfiles/fixedPoint/{resolution}/res_{iter}.txt", resolution = resolutions, iter = iterations),
+        expand("Errorfiles/floatingPoint/{format}/{iter}.txt", format = formats, iter = iterations)
+        
+
+def get_rq1(w):
+    return rq1[int(w.iter)-1]
+def get_rq2(w):
+    return rq2[int(w.iter)-1]
+def get_sample(w):
+    return samples[int(w.iter)-1]
+
+rule floating:
+    input:
+        "../nuevomatchup/ranges-test.txt"
+    wildcard_constraints:
+        format = '|'.join(formats[1:])
+    output:
+        "Errorfiles/floatingPoint/{format}/{iter}.txt"
+    params:
+        rq1 = get_rq1,
+        rq2 = get_rq2,
+        sample = get_sample
+    shell:
+        "../nuevomatchup_org/bin/util-rqrmi64.exe --file {input} --custom-rqrmi 1,{params.rq1},{params.rq2} --samples-per-session {params.sample} --floating-point {wildcards.format} > {output}"
+
+rule floating_org:
+    input:
+        "../nuevomatchup/ranges-test.txt"
+    output:
+        "Errorfiles/floatingPoint/org/{iter}.txt"
+    params:
+        rq1 = get_rq1,
+        rq2 = get_rq2,
+        sample = get_sample
+    
+    shell:
+        "../nuevomatchup_org/bin/util-rqrmi64.exe --file {input} --custom-rqrmi 1,{params.rq1},{params.rq2} --samples-per-session {params.sample} > {output}"
+
+rule fixed:
+    input:
+        "../nuevomatchup/ranges-test.txt"
+    output:
+        "Errorfiles/fixedPoint/{resolution}/res_{iter}.txt"
+    params:
+        rq1 = get_rq1,
+        rq2 = get_rq2,
+        sample = get_sample
+    
+    wildcard_constraints:
+        resolution = "\d+"
+    shell:
+        "../nuevomatchup_org/bin/util-rqrmi64.exe --file {input} --custom-rqrmi 1,{params.rq1},{params.rq2} --resolution {wildcards.resolution} --samples-per-session {params.sample} > {output}"
+
+rule fixed_org:
+    input:
+        "../nuevomatchup/ranges-test.txt"
+    output:
+        "Errorfiles/fixedPoint/org/res_{iter}.txt"
+    params:
+        rq1 = get_rq1,
+        rq2 = get_rq2,
+        sample = get_sample
+    shell:
+        "../nuevomatchup_org/bin/util-rqrmi64.exe --file {input} --custom-rqrmi 1,{params.rq1},{params.rq2} --samples-per-session {params.sample} > {output}"
+
