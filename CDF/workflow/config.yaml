@@ -1,2 +1,5 @@
-seed: 3124
-res: 4
+seed: 45675334363634
+res: 5
+quantization: fixed
+num_iters: 10
+format: none
