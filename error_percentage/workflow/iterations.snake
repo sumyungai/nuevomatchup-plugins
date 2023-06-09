@@ -13,10 +13,10 @@ rq2 = []
 samples = []
 random.seed(my_seed)
 for i in range(10):
-    rq1.append(random.randint(15, 15))
+    rq1.append(random.randint(10, 16))
     rq2.append(random.randint(32, 100))
 for i in range(10):
-    samples.append(random.randint(4000,4000))
+    samples.append(random.randint(4000,8000))
 
 iterations = range(config['num_iters'])
 formats = [ 'org', 'float16', 'float8_1', 'half_prec', 'float8_2', 'Bfloat16', 'fp32']
